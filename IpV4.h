@@ -11,6 +11,7 @@ using namespace std;
 class IpV4 {
 private:
     string ip;
+    struct sockaddr_in sockAddr;
     
     bool isValid(string);
     
@@ -18,6 +19,9 @@ public:
     IpV4();
     IpV4(string ip);
     IpV4(const IpV4& orig);
+    
+    string getIp();
+    
     virtual ~IpV4();
 
 };

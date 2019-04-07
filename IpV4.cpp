@@ -14,8 +14,11 @@ IpV4::IpV4(const string ip) {
 }
 
 bool IpV4::isValid(string ipAddress) {
-    struct sockaddr_in sa;
-    return inet_pton(AF_INET, ipAddress.c_str(), &(sa.sin_addr))!=0;
+    return inet_pton(AF_INET, ipAddress.c_str(), &(this->sockAddr.sin_addr))!=0;
+}
+
+string IpV4::getIp() {
+    return this->ip;
 }
 
 IpV4::IpV4(const IpV4& orig) {

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include "IpV4.h"
+#include "Ping.h"
 
 using namespace std;
 
@@ -16,6 +17,9 @@ int main(int argc, char** argv) {
     try {
         string ip = getIpAddress(argc, argv);
         IpV4 ipv4(ip);
+        
+        Ping ping(ipv4.getIp());
+        ping.startPinging();
     }
     catch(string err) {
         cout << "[ERROR] " + err << endl;
