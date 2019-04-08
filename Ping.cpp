@@ -1,10 +1,21 @@
 #include "Ping.h"
 
+#define BYTE 8
 #define	DEFDATALEN (64-ICMP_MINLEN)
 #define	MAXIPLEN 60
 #define	MAXICMPLEN 76
 
+void decToBinary(int n, char *binary_number) {
+    unsigned int i;
+    int mask = 1 << (sizeof(int) * BYTE) - 1;
 
+    for(i=0; i<(sizeof(int) * BYTE); i++) {
+	binary_number[i] = n & mask ? '1':'0';
+	n = n << 1;
+    }
+
+    binary_number[i] = '\0';
+}
 
 uint16_t in_cksum(uint16_t *addr, unsigned len)
 {
@@ -47,11 +58,14 @@ void Ping::initSendToSockAddr() {
 Ping::Ping(const Ping& orig) {
 }
 
-void Ping::startPinging() {
+void Ping::startPinging() {    
     int ssize;
     unsigned char buff[MAX_ICMP_DATA_SIZE];
     
     int cc = DEFDATALEN + ICMP_MINLEN;
+    
+    cout << "CC PREDICTED SIZE: " << cc << endl;
+    
     struct icmp *icp;
     icp = (struct icmp *)buff;
     icp->icmp_type = ICMP_ECHO;
@@ -59,7 +73,12 @@ void Ping::startPinging() {
     icp->icmp_cksum = 0;
     icp->icmp_seq = 12345;
     icp->icmp_id = getpid();
+    
+    cout << "BEFORE CHECKSUM ICMP SIZE: " << sizeof(*icp) << endl;
+    
     icp->icmp_cksum = in_cksum((unsigned short *)icp, cc);
+    
+    cout << "AFTER CHECKSUM ICMP SIZE: " << sizeof(icp) << endl;
     
     ssize = sendto(this->sockFd, (unsigned char*)buff, cc, 0, (struct sockaddr*)&this->sendTo, (socklen_t)sizeof(struct sockaddr_in));
     
